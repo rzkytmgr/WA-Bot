@@ -9,15 +9,15 @@ Jangan lupa, hubungi saya di Instagram untuk mengkonfirmasinya.
 
 *Seluruh Perintah/Commands Bot :*
 _Note :_ Gunakan dengan bijak, seluruh tanggung jawab di serahkan kepada user.
+Jika ingin request fitur, bisa kontak instagram Developer di *@rzkytmgrr* 
+
+*!gmenu* - Berfungsi untuk menampilkan semua menu/perintah pada bot pada sebuah grup.
 
 *!menu* - Berfungsi untuk menampilkan semua menu/perintah pada bot tanpa terkecuali.
 
 *!info* - Berfungsi untuk menampilkan info tentang bot.
 
 *!ping* - Berfungsi untuk tag/mention semua member yang ada di dalam sebuah grup.
-
-*!pesan* [Isi Pesan] - Berfungsi untuk mengirimkan pesan kepada *Developer*, jika teman-teman ingin request fitur bisa menggunakan perintah ini.
-↳ Penggunaan : !pesan Buatin fitur dapatin pacar tolong
 
 *!covid* [Negara] - Berfungsi untuk menampilkan informasi terbaru tentang Covid-19.
 ↳ Penggunaan : !covid indonesia

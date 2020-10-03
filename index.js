@@ -42,15 +42,75 @@ function FnBot(client) {
                 const senderId = sender.id.split('@')[0];
 
                 // declared text/command from message recieve
-                let command, name, pesan;
+                let command, name, pesan, args;
                 caption ? command = caption : command = body
-                body[0] === '!' ? console.log(body[0]) : command = 0;
+                body[0] === '!' ? '' : command = 0;
+
+                if(command.trim().split(' ')[1]) args = command.trim().split(' ')[1];
+                if(chat.isGroup) {
+                        switch(command.trim().split(' ')[0].slice(1)) {
+                                case 'gstat':
+                                        console.log('gstat')
+                                        let groupData = {
+                                                owner: chat.groupMetadata.owner.split('@')[0],
+                                                name: chat.name,
+                                                cMember: chat.groupMetadata.participants.length,
+                                                desc: chat.groupMetadata.desc
+                                        }
+                                        const { owner, name, cMember, desc } = groupData;
+                                        client.sendTextWithMentions(from, `Hai @${senderId} Selamat Datang 👋!\n🐻 *Tentang Group*\n\n*Nama Group* : ${name}\n*Owner* : @${owner}\n*Total Member* : ${cMember}\n*Deskripsi* : \n${desc}\n\nTerima Kasih,\nGunakan Command *!gmenu* untuk membuka semua perintah bot pada grup ini. 🦧`, id)
+                                        break;
+                                
+                                case 'gadd':
+                                        if(args) {
+                                                if(args[0] === '0') {
+                                                        args = args.split('');
+                                                        args.splice(0, 1, 62);
+                                                        args = args.join('')
+                                                }
+                                                client.addParticipant(chat.groupMetadata.id, args + '@c.us').then(res => {
+                                                        client.sendTextWithMentions(from, `@${args} Berhasil Ditambahkan!`);
+                                                }).catch(err => {
+                                                        console.log('[ERR] Nomor tidak ditemukan! atau bot tidak admin');
+                                                })
+                                        }
+                                        break;
+                                
+                                case 'gkick':
+                                        if(args) {
+                                                if(args[0] === '0') {
+                                                        args = args.split('');
+                                                        args.splice(0, 1, 62);
+                                                        args = args.join('')
+                                                }
+                                                client.removeParticipant(chat.groupMetadata.id, args + '@c.us').then(res => {
+                                                        client.sendTextWithMentions(from, `@${args} Berhasil dikirim keneraka!`);
+                                                }).catch(err => {
+                                                        console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`)
+                                                })
+                                        }
+                                        break;
+                                
+                                case 'p':
+                                case 'ping':
+                                        if(chat.isGroup) {
+                                                client.getGroupMembers(chat.groupMetadata.id).then(res => {
+                                                        let allMembersId = res.map(member => `*@${member.id.split('@')[0]}*\n`);
+                                                        let finalResult = allMembersId.join('');
+                                                        client.sendTextWithMentions(from, `Summon no jutsu!\n\n${finalResult}\nFollow Instagram Developer *@rzkytmgrr* untuk info Update-an terbaru tentang Bot!`)
+                                                }).catch(err=>console.log(err))
+                                        } else {
+                                                client.sendText(from, 'Only Group!');
+                                        }
+                                        break;
+                        }
+                }
 
                 // conditional (switch), what will bot do
                 switch(command.trim().split(' ')[0].slice(1)) {
                         
                         case 'info':
-                                client.reply(from, `Hai, *@${senderId}*\n${botInfo}`, id);
+                                client.sendTextWithMentions(from, `Hai, *@${senderId}*\n${botInfo}`, id);
                                 break;
 
                         //  menu command section, will show all commands
@@ -59,25 +119,6 @@ function FnBot(client) {
                         case 'perintah':
                                 client.reply(from, `Hai, *@${senderId}*\n ${logId}`, id);
                                 break;
-
-                        // ping command section, will get all members id and tag all in a group
-                        case 'p':
-                        case 'ping':
-                                if(chat.isGroup) {
-                                        client.getGroupMembers(chat.groupMetadata.id).then(res => {
-                                                let allMembersId = res.map(member => `*@${member.id.split('@')[0]}*\n`);
-                                                let finalResult = allMembersId.join('');
-                                                client.sendTextWithMentions(from, `Summon no jutsu!\n\n${finalResult}\nFollow Instagram Developer *@rzkytmgrr* untuk info Update-an terbaru tentang Bot!`)
-                                        }).catch(err=>console.log(err))
-                                } else {
-                                        client.sendText(from, 'Only Group!');
-                                }
-                                break;
-
-                        // pesan command section, will send a message to developer
-                        case 'pesan':
-                                pesan = body.trim().split(' ').slice(1).toString();
-                                sendMessage(sender.pushname, sender.formattedName, pesan);
 
                         // voice command section, will make a request to google translate API and recieved voice data.
                         case 'voice':
@@ -200,8 +241,6 @@ function FnBot(client) {
                         case 'gombal':
                                 client.reply(from, getGombal(), id);
                                 break;
-
-
                 }
 
        })
