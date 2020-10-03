@@ -104,6 +104,8 @@ function FnBot(client) {
                                         }
                                         break;
                         }
+                } else {
+                        client.reply(`Sorry ya bang abang buat commandnya tidak di group, ini perintah hanya bisa dijalankan di grup.\nJika ada pertanyaan bisa tanyakan lewat instagram *@rzkytmgrr* makasih bang!`);
                 }
 
                 // conditional (switch), what will bot do
