@@ -2,7 +2,7 @@
 const wa = require('@open-wa/wa-automate');
 
 // import menu languages
-const { logId, botInfo } = require('./lang/menuLang');
+const { menuId, botInfoId, gmenuId } = require('./lang/menuLang');
 
 // import all api from api folder
 const { getCovidInfo, showCovidInfo } = require('./api/covidInfo');
@@ -22,33 +22,76 @@ wa.create({
 
 
 function FnBot(client) {
-
+        
         client.onAnyMessage(async (message) => {
                 const { chat, from, id, body} = message;
-
+                
                 if(!chat.isGroup && body[0] !== '!') client.reply(from, `Hai, Saya asisten kami ketik *!info* untuk menampilkan info bot dan ketika *!menu* untuk menampilkan perintah yang dimiliki bot terima kasih 😼` , id);
-
+                
                 // join group via chat url
                 let url = body.split(' ').find(res => res.split('/')[2] === 'chat.whatsapp.com' ? res : 0);
                 if(url !== undefined) client.joinGroupViaLink(url).then(() => console.log('[INFO] Has Joined a Group via Link')).catch(err => console.log(`[ERR] Failed Join a group via link`, err));
-
+                
         })
-
+        
         // client event when the client recieved a message
         client.onMessage(async (message) => {
-               
                 // declared object variable from message object
-                const { id, from, body, caption, chat, sender, isGroup, groupMetadata } = message;
+                const { id, author, from, body, caption, chat, sender, isGroup, groupMetadata } = message;
                 const senderId = sender.id.split('@')[0];
-
+                
                 // declared text/command from message recieve
-                let command, name, pesan, args;
+                let command, name, pesan, args, isAdmin, allAdmins;
                 caption ? command = caption : command = body
                 body[0] === '!' ? '' : command = 0;
-
+                
                 if(command.trim().split(' ')[1]) args = command.trim().split(' ')[1];
+                
+                
                 if(chat.isGroup) {
+                        // function checkadmin
+                        const checkAdmin = (number, admins) => {
+                                let isAdmin = admins.filter(res => res === number ? true : false);
+                                return isAdmin.toString();
+                        }        
+
+                        allAdmins = await client.getGroupAdmins(from);
+                        checkAdmin(author, allAdmins) !== '' ? isAdmin = true : isAdmin = false;
+
                         switch(command.trim().split(' ')[0].slice(1)) {
+                                case 'grevoke':
+                                        client.revokeGroupInviteLink(from).then(res => {
+                                                client.reply(from, `Berhasil Revoke Grup Link gunakan *!ginvitelink* untuk mendapatkan group invite link yang terbaru`, id);
+                                        }).catch(err => {
+                                                console.log(`[ERR] ${err}`);
+                                        })
+                                        break;
+
+                                case 'ginvitelink':
+                                        client.getGroupInviteLink(from).then(res => {
+                                                client.reply(from, `Request Invite Link!\n*Link :* ${res}`, id)
+                                        }).catch(err => {
+                                                console.log(`[ERR] ${err}`);
+                                        })
+                                        break;
+
+                                case 'gleave':
+                                        client.removeParticipant(chat.groupMetadata.id, author).then(() => console.log('Success leave')).catch(err => {
+                                                console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`)
+                                        })
+                                        break;
+
+                                case 'gadmins':
+                                        client.getGroupAdmins(from).then(res => {
+                                                let admins = res.map(admin => `@${admin.split('@')[0]}`);
+                                                client.sendTextWithMentions(from, `🐨 *List seluruh Admin Grup :*\n\n${admins.join('\n')}`);
+                                        });
+                                        break;
+
+                                case 'gmenu':
+                                        client.sendTextWithMentions(from, `Hai @${senderId},\n\n${gmenuId}`);
+                                        break;
+
                                 case 'gstat':
                                         console.log('gstat')
                                         let groupData = {
@@ -62,7 +105,7 @@ function FnBot(client) {
                                         break;
                                 
                                 case 'gadd':
-                                        if(args) {
+                                        if(args && isAdmin) {
                                                 if(args[0] === '0') {
                                                         args = args.split('');
                                                         args.splice(0, 1, 62);
@@ -77,14 +120,35 @@ function FnBot(client) {
                                         break;
                                 
                                 case 'gkick':
-                                        if(args) {
-                                                if(args[0] === '0') {
-                                                        args = args.split('');
-                                                        args.splice(0, 1, 62);
-                                                        args = args.join('')
-                                                }
-                                                client.removeParticipant(chat.groupMetadata.id, args + '@c.us').then(res => {
-                                                        client.sendTextWithMentions(from, `@${args} Berhasil dikirim keneraka!`);
+                                        if(args && isAdmin) {
+                                                let finalNumber = args;
+                                                if(args[0] === '@') finalNumber = args.slice(1);
+                                                client.removeParticipant(chat.groupMetadata.id, finalNumber + '@c.us').then(res => {
+                                                        client.sendTextWithMentions(from, `${args} Berhasil dikirim keneraka!`);
+                                                }).catch(err => {
+                                                        console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`)
+                                                })
+                                        }
+                                        break;
+                                
+                                case 'gpromote':
+                                        if(args && isAdmin) {
+                                                let finalNumber = args;
+                                                if(args[0] === '@') finalNumber = args.slice(1);
+                                                client.promoteParticipant(chat.groupMetadata.id, finalNumber + '@c.us').then(res => {
+                                                        client.sendTextWithMentions(from, `${args} Telah di Promote menjadi Admin!`);
+                                                }).catch(err => {
+                                                        console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`)
+                                                })
+                                        }
+                                        break;
+
+                                case 'gdemote':
+                                        if(args && isAdmin) {
+                                                let finalNumber = args;
+                                                if(args[0] === '@') finalNumber = args.slice(1);
+                                                client.demoteParticipant(chat.groupMetadata.id, finalNumber + '@c.us').then(res => {
+                                                        client.sendTextWithMentions(from, `${args} Telah di Demote dari Admin!`);
                                                 }).catch(err => {
                                                         console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`)
                                                 })
@@ -112,14 +176,14 @@ function FnBot(client) {
                 switch(command.trim().split(' ')[0].slice(1)) {
                         
                         case 'info':
-                                client.sendTextWithMentions(from, `Hai, *@${senderId}*\n${botInfo}`, id);
+                                client.sendTextWithMentions(from, `Hai, *@${senderId}*\n${botInfoId}`, id);
                                 break;
 
                         //  menu command section, will show all commands
                         case 'menu':
                         case 'command':
                         case 'perintah':
-                                client.reply(from, `Hai, *@${senderId}*\n ${logId}`, id);
+                                client.reply(from, `Hai, *@${senderId}*\n ${menuId}`, id);
                                 break;
 
                         // voice command section, will make a request to google translate API and recieved voice data.
@@ -253,7 +317,7 @@ function FnBot(client) {
 
                 const { id } = message
 
-                client.sendText(message.id, logId);
+                client.sendText(message.id, menuId);
                 console.log(`[INFO] Bot success added to group! Group Id ${id}`)
        })
 
