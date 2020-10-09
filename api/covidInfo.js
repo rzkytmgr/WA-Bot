@@ -3,27 +3,27 @@ const axios = require("axios");
 
 // covid info function
 async function getCovidInfo(countryCode = "") {
-  let data;
+    let data;
 
-  const APIUrl = `https://covid19.mathdro.id/api/${
-    countryCode !== "" ? "countries/" + countryCode : ""
-  }`;
+    const APIUrl = `https://covid19.mathdro.id/api/${
+        countryCode !== "" ? "countries/" + countryCode : ""
+    }`;
 
-  try {
-    let result = await axios.get(APIUrl);
-    data = result.data;
-  } catch {
-    console.log(`[ERR] ${err}`);
-  }
+    try {
+        let result = await axios.get(APIUrl);
+        data = result.data;
+    } catch {
+        console.log(`[ERR] ${err}`);
+    }
 
-  return data;
+    return data;
 }
 
 function showCovidInfo(data) {
-  return `
+    return `
 📣 Data Kasus Terbaru Covid-19 di *${
-    data.name ? data.name.toUpperCase() : "Dunia"
-  }*
+        data.name ? data.name.toUpperCase() : "Dunia"
+    }*
 
 Terkonfirmasi : *${data.confirmed}* Jiwa
 Sembuh         : *${data.recovered}* Jiwa
