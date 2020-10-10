@@ -475,13 +475,14 @@ function FnBot(client) {
                     .toString()
                     .replace(/,/g, " ");
                 let mirip = [
-                    "mang oleh",
-                    "monyet",
-                    "biawak",
-                    "buaya",
-                    "ngeteh asw",
-                    "mang garox",
-                    "yang lek",
+                    "Mang Oleh",
+                    "Monyet",
+                    "Biawak",
+                    "Buaya",
+                    "Ngeteh Asw",
+                    "Mang Garox",
+                    "Yang Lek",
+                    "Uzumaki Bayu",
                 ];
                 random = Math.floor(Math.random() * (mirip.length - 1) + 1);
                 client.reply(from, `${name} mirip dengan ${mirip[random]}`, id);
