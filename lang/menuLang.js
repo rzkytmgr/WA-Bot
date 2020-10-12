@@ -17,6 +17,9 @@ Jika ingin request fitur, bisa kontak instagram Developer di *@rzkytmgrr*
 
 *!info* - Berfungsi untuk menampilkan info tentang bot.
 
+*!join* [Link Invite] - Berfungsi untuk invite bot ke grup yang kamu tuju.
+↳ Penggunaan : !join https://chat.whatsapp.com/invitelinkcodehere
+
 *!covid* [Negara] - Berfungsi untuk menampilkan informasi terbaru tentang Covid-19.
 ↳ Penggunaan : !covid indonesia
 
@@ -39,7 +42,7 @@ Jika ingin request fitur, bisa kontak instagram Developer di *@rzkytmgrr*
 ↳ Penggunaan : !mirip udin
 
 *!gombal* - Berfungsi untuk menampilkan gombalan-gombalan maut yang ada untuk membuat seseorang baper.
-`
+`;
 
 // bot info
 const botInfoId = `
@@ -50,7 +53,7 @@ Nama bot (SadBot) sendiri terinspirasi dari, Developer yang selalu sedih dan mer
 
 Mungkin hanya sekian tentang bot ini, gunakan perintah *!menu* untuk membuka semua perintah-perintah yang dapat dilakukan bot. Terima Kasih.
 
-`
+`;
 
 // Group menu id
 const gmenuId = `
@@ -81,10 +84,10 @@ Perintah/Command Bot (Grup) :
 *!grevoke* - Revoke invite link, akan me-revoke semua link sebelumnya.
 
 *!ginvitelink* - Mendapatkan link invite grup terbaru yang dapat digunakan.
-`
+`;
 
 module.exports = {
-        menuId,
-        botInfoId,
-        gmenuId
-}
+    menuId,
+    botInfoId,
+    gmenuId,
+};
