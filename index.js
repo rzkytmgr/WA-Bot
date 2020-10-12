@@ -30,20 +30,6 @@ function FnBot(client) {
                 `Hai, Saya asisten kami ketik *!info* untuk menampilkan info bot dan ketika *!menu* untuk menampilkan perintah yang dimiliki bot terima kasih 😼`,
                 id
             );
-
-        // join group via chat url
-        let url = body
-            .split(" ")
-            .find((res) =>
-                res.split("/")[2] === "chat.whatsapp.com" ? res : 0
-            );
-        if (url !== undefined)
-            client
-                .joinGroupViaLink(url)
-                .then(() => console.log("[INFO] Has Joined a Group via Link"))
-                .catch((err) =>
-                    console.log(`[ERR] Failed Join a group via link`, err)
-                );
     });
 
     // client event when the client recieved a message
@@ -98,6 +84,13 @@ function FnBot(client) {
                             .catch((err) => {
                                 console.log(`[ERR] ${err}`);
                             });
+                    }
+                    break;
+
+                case "join":
+                    if (args) {
+                        client.joinGroupViaLink(args);
+                        console.log("[JOIN] BOT JOINED TO A GROUP");
                     }
                     break;
 
