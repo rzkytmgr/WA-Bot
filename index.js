@@ -12,6 +12,7 @@ const { getGombal } = require("./api/getGombal");
 
 // import helper function from helper folder
 const { langCheck } = require("./helpers/helperFunction");
+const { decryptMedia } = require("@open-wa/wa-automate");
 
 // create whatsapp client
 wa.create({
@@ -410,22 +411,17 @@ function FnBot(client) {
             // sticker command section, will convert from image to sticker
             case "sticker":
             case "stiker":
-                client
-                    .decryptMedia(id)
-                    .then((res) => {
-                        client.sendImageAsSticker(from, res.toString());
-                        console.log(`[OK] ${from} succeed sent a sticker!`);
-                    })
-                    .catch((err) => {
-                        console.log(
-                            `[ERR] Stiker Error Request from ${from} -> ${err}`
-                        );
-                        client.reply(
-                            from,
-                            `*Pastikan Anda Mengirim sebuah file Gambar! Jika anda sudah yakin mengirimkan file gambar, kemungkinan bot sedang tidak baik baik saja, Silahkan kirimkan ulang dengan menggunakan caption !stiker* 🤖`,
-                            id
-                        );
-                    });
+                const { mimetype } = message;
+                if (mimetype) {
+                    const mediaData = await decryptMedia(message);
+                    const b64 = `data:${mimetype};base64,${mediaData.toString(
+                        "base64"
+                    )}`;
+                    await client
+                        .sendImageAsSticker(from, b64)
+                        .then((res) => console.log("Sticker Send"))
+                        .catch((err) => console.log("Failed send sticker"));
+                }
                 break;
 
             // song lyrics command section, will send response lyrics
