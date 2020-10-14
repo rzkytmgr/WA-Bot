@@ -459,12 +459,15 @@ function FnBot(client) {
                 break;
 
             case "mirip":
-                name = body
-                    .trim()
-                    .split(" ")
-                    .slice(1)
-                    .toString()
-                    .replace(/,/g, " ");
+                name =
+                    "*" +
+                    body
+                        .trim()
+                        .split(" ")
+                        .slice(1)
+                        .toString()
+                        .replace(/,/g, " ") +
+                    "*";
                 let mirip = [
                     "Mang Oleh",
                     "Monyet",
@@ -480,14 +483,17 @@ function FnBot(client) {
                 break;
 
             case "gay":
-                name = body
-                    .trim()
-                    .split(" ")
-                    .slice(1)
-                    .toString()
-                    .replace(/,/g, " ");
+                name =
+                    "*" +
+                    body
+                        .trim()
+                        .split(" ")
+                        .slice(1)
+                        .toString()
+                        .replace(/,/g, " ") +
+                    "*";
                 random = Math.floor(Math.random() * (100 - 1) + 1);
-                client.reply(from, `Tingkat Gay *${name}* ${random}%`);
+                client.reply(from, `Tingkat Gay ${name} ${random}%`);
                 break;
 
             case "gombal":
