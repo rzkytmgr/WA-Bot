@@ -420,7 +420,9 @@ function FnBot(client) {
                     await client
                         .sendImageAsSticker(from, b64)
                         .then((res) => console.log("Sticker Send"))
-                        .catch((err) => console.log("Failed send sticker"));
+                        .catch((err) =>
+                            console.log("Failed send sticker, Error: ", err)
+                        );
                 }
                 break;
 
