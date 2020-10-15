@@ -496,6 +496,7 @@ function FnBot(client) {
                 client.reply(from, `Tingkat Gay ${name} ${random}%`);
                 break;
 
+            case "bucin":
             case "gombal":
                 client.reply(from, getGombal(), id);
                 break;
