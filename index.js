@@ -8,7 +8,7 @@ const { menuId, botInfoId, gmenuId } = require("./lang/menuLang");
 const { getCovidInfo, showCovidInfo } = require("./api/covidInfo");
 const { getQuran, showQuranInfo } = require("./api/quran");
 const { getLyrics } = require("./api/songLyrics");
-const { getGombal } = require("./api/getGombal");
+const { getGombal, getGay } = require("./api/getGombal");
 
 // import helper function from helper folder
 const { langCheck } = require("./helpers/helperFunction");
@@ -25,28 +25,13 @@ function FnBot(client) {
     client.onAnyMessage(async (message) => {
         const { chat, from, id, body } = message;
 
-        if (!chat.isGroup && body[0] !== "!")
-            client.reply(
-                from,
-                `Hai, Saya asisten kami ketik *!info* untuk menampilkan info bot dan ketika *!menu* untuk menampilkan perintah yang dimiliki bot terima kasih 😼`,
-                id
-            );
+        if (!chat.isGroup && body[0] !== "!") client.reply(from, `Hai, Saya asisten kami ketik *!info* untuk menampilkan info bot dan ketika *!menu* untuk menampilkan perintah yang dimiliki bot terima kasih 😼`, id);
     });
 
     // client event when the client recieved a message
     client.onMessage(async (message) => {
         // declared object variable from message object
-        const {
-            id,
-            author,
-            from,
-            body,
-            caption,
-            chat,
-            sender,
-            isGroup,
-            groupMetadata,
-        } = message;
+        const { id, author, from, body, caption, chat, sender, isGroup, groupMetadata } = message;
         const senderId = sender.id.split("@")[0];
 
         // declared text/command from message recieve
@@ -59,16 +44,12 @@ function FnBot(client) {
         if (chat.isGroup) {
             // function checkadmin
             const checkAdmin = (number, admins) => {
-                let isAdmin = admins.filter((res) =>
-                    res === number ? true : false
-                );
+                let isAdmin = admins.filter((res) => (res === number ? true : false));
                 return isAdmin.toString();
             };
 
             allAdmins = await client.getGroupAdmins(from);
-            checkAdmin(author, allAdmins) !== ""
-                ? (isAdmin = true)
-                : (isAdmin = false);
+            checkAdmin(author, allAdmins) !== "" ? (isAdmin = true) : (isAdmin = false);
 
             switch (command.trim().split(" ")[0].slice(1)) {
                 case "grevoke":
@@ -76,11 +57,7 @@ function FnBot(client) {
                         client
                             .revokeGroupInviteLink(from)
                             .then((res) => {
-                                client.reply(
-                                    from,
-                                    `Berhasil Revoke Grup Link gunakan *!ginvitelink* untuk mendapatkan group invite link yang terbaru`,
-                                    id
-                                );
+                                client.reply(from, `Berhasil Revoke Grup Link gunakan *!ginvitelink* untuk mendapatkan group invite link yang terbaru`, id);
                             })
                             .catch((err) => {
                                 console.log(`[ERR] ${err}`);
@@ -99,11 +76,7 @@ function FnBot(client) {
                     client
                         .getGroupInviteLink(from)
                         .then((res) => {
-                            client.reply(
-                                from,
-                                `Request Invite Link!\n*Link :* ${res}`,
-                                id
-                            );
+                            client.reply(from, `Request Invite Link!\n*Link :* ${res}`, id);
                         })
                         .catch((err) => {
                             console.log(`[ERR] ${err}`);
@@ -115,31 +88,19 @@ function FnBot(client) {
                         .removeParticipant(chat.groupMetadata.id, author)
                         .then(() => console.log("Success leave"))
                         .catch((err) => {
-                            console.log(
-                                `[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`
-                            );
+                            console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`);
                         });
                     break;
 
                 case "gadmins":
                     client.getGroupAdmins(from).then((res) => {
-                        let admins = res.map(
-                            (admin) => `@${admin.split("@")[0]}`
-                        );
-                        client.sendTextWithMentions(
-                            from,
-                            `🐨 *List seluruh Admin Grup :*\n\n${admins.join(
-                                "\n"
-                            )}`
-                        );
+                        let admins = res.map((admin) => `@${admin.split("@")[0]}`);
+                        client.sendTextWithMentions(from, `🐨 *List seluruh Admin Grup :*\n\n${admins.join("\n")}`);
                     });
                     break;
 
                 case "gmenu":
-                    client.sendTextWithMentions(
-                        from,
-                        `Hai @${senderId},\n\n${gmenuId}`
-                    );
+                    client.sendTextWithMentions(from, `Hai @${senderId},\n\n${gmenuId}`);
                     break;
 
                 case "gstat":
@@ -151,11 +112,7 @@ function FnBot(client) {
                         desc: chat.groupMetadata.desc,
                     };
                     const { owner, name, cMember, desc } = groupData;
-                    client.sendTextWithMentions(
-                        from,
-                        `Hai @${senderId} Selamat Datang 👋!\n🐻 *Tentang Group*\n\n*Nama Group* : ${name}\n*Owner* : @${owner}\n*Total Member* : ${cMember}\n*Deskripsi* : \n${desc}\n\nTerima Kasih,\nGunakan Command *!gmenu* untuk membuka semua perintah bot pada grup ini. 🦧`,
-                        id
-                    );
+                    client.sendTextWithMentions(from, `Hai @${senderId} Selamat Datang 👋!\n🐻 *Tentang Group*\n\n*Nama Group* : ${name}\n*Owner* : @${owner}\n*Total Member* : ${cMember}\n*Deskripsi* : \n${desc}\n\nTerima Kasih,\nGunakan Command *!gmenu* untuk membuka semua perintah bot pada grup ini. 🦧`, id);
                     break;
 
                 case "gadd":
@@ -166,20 +123,12 @@ function FnBot(client) {
                             args = args.join("");
                         }
                         client
-                            .addParticipant(
-                                chat.groupMetadata.id,
-                                args + "@c.us"
-                            )
+                            .addParticipant(chat.groupMetadata.id, args + "@c.us")
                             .then((res) => {
-                                client.sendTextWithMentions(
-                                    from,
-                                    `@${args} Berhasil Ditambahkan!`
-                                );
+                                client.sendTextWithMentions(from, `@${args} Berhasil Ditambahkan!`);
                             })
                             .catch((err) => {
-                                console.log(
-                                    "[ERR] Nomor tidak ditemukan! atau bot tidak admin"
-                                );
+                                console.log("[ERR] Nomor tidak ditemukan! atau bot tidak admin");
                             });
                     }
                     break;
@@ -189,20 +138,12 @@ function FnBot(client) {
                         let finalNumber = args;
                         if (args[0] === "@") finalNumber = args.slice(1);
                         client
-                            .removeParticipant(
-                                chat.groupMetadata.id,
-                                finalNumber + "@c.us"
-                            )
+                            .removeParticipant(chat.groupMetadata.id, finalNumber + "@c.us")
                             .then((res) => {
-                                client.sendTextWithMentions(
-                                    from,
-                                    `${args} Berhasil dikirim keneraka!`
-                                );
+                                client.sendTextWithMentions(from, `${args} Berhasil dikirim keneraka!`);
                             })
                             .catch((err) => {
-                                console.log(
-                                    `[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`
-                                );
+                                console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`);
                             });
                     }
                     break;
@@ -212,20 +153,12 @@ function FnBot(client) {
                         let finalNumber = args;
                         if (args[0] === "@") finalNumber = args.slice(1);
                         client
-                            .promoteParticipant(
-                                chat.groupMetadata.id,
-                                finalNumber + "@c.us"
-                            )
+                            .promoteParticipant(chat.groupMetadata.id, finalNumber + "@c.us")
                             .then((res) => {
-                                client.sendTextWithMentions(
-                                    from,
-                                    `${args} Telah di Promote menjadi Admin!`
-                                );
+                                client.sendTextWithMentions(from, `${args} Telah di Promote menjadi Admin!`);
                             })
                             .catch((err) => {
-                                console.log(
-                                    `[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`
-                                );
+                                console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`);
                             });
                     }
                     break;
@@ -235,20 +168,12 @@ function FnBot(client) {
                         let finalNumber = args;
                         if (args[0] === "@") finalNumber = args.slice(1);
                         client
-                            .demoteParticipant(
-                                chat.groupMetadata.id,
-                                finalNumber + "@c.us"
-                            )
+                            .demoteParticipant(chat.groupMetadata.id, finalNumber + "@c.us")
                             .then((res) => {
-                                client.sendTextWithMentions(
-                                    from,
-                                    `${args} Telah di Demote dari Admin!`
-                                );
+                                client.sendTextWithMentions(from, `${args} Telah di Demote dari Admin!`);
                             })
                             .catch((err) => {
-                                console.log(
-                                    `[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`
-                                );
+                                console.log(`[ERR] Kemungkinan nomor ini tidak member, atau bot tidak admin`);
                             });
                     }
                     break;
@@ -259,15 +184,9 @@ function FnBot(client) {
                         client
                             .getGroupMembers(chat.groupMetadata.id)
                             .then((res) => {
-                                let allMembersId = res.map(
-                                    (member) =>
-                                        `*@${member.id.split("@")[0]}*\n`
-                                );
+                                let allMembersId = res.map((member) => `*@${member.id.split("@")[0]}*\n`);
                                 let finalResult = allMembersId.join("");
-                                client.sendTextWithMentions(
-                                    from,
-                                    `Summon no jutsu!\n\n${finalResult}\nFollow Instagram Developer *@rzkytmgrr* untuk info Update-an terbaru tentang Bot!`
-                                );
+                                client.sendTextWithMentions(from, `Summon no jutsu!\n\n${finalResult}\nFollow Instagram Developer *@rzkytmgrr* untuk info Update-an terbaru tentang Bot!`);
                             })
                             .catch((err) => console.log(err));
                     } else {
@@ -276,19 +195,13 @@ function FnBot(client) {
                     break;
             }
         } else {
-            client.reply(
-                `Sorry ya bang abang buat commandnya tidak di group, ini perintah hanya bisa dijalankan di grup.\nJika ada pertanyaan bisa tanyakan lewat instagram *@rzkytmgrr* makasih bang!`
-            );
+            client.reply(`Sorry ya bang abang buat commandnya tidak di group, ini perintah hanya bisa dijalankan di grup.\nJika ada pertanyaan bisa tanyakan lewat instagram *@rzkytmgrr* makasih bang!`);
         }
 
         // conditional (switch), what will bot do
         switch (command.trim().split(" ")[0].slice(1)) {
             case "info":
-                client.sendTextWithMentions(
-                    from,
-                    `Hai, *@${senderId}*\n${botInfoId}`,
-                    id
-                );
+                client.sendTextWithMentions(from, `Hai, *@${senderId}*\n${botInfoId}`, id);
                 break;
 
             //  menu command section, will show all commands
@@ -305,51 +218,23 @@ function FnBot(client) {
                     let lang = body.split(" ").slice(1, 2).toString();
                     lang = langCheck(lang);
 
-                    let text = body
-                        .split(" ")
-                        .slice(2)
-                        .toString()
-                        .replace(/,/g, " ");
+                    let text = body.split(" ").slice(2).toString().replace(/,/g, " ");
                     if (lang === undefined) {
                         lang = "id";
-                        text = body
-                            .split(" ")
-                            .slice(1)
-                            .toString()
-                            .replace(/,/g, " ");
+                        text = body.split(" ").slice(1).toString().replace(/,/g, " ");
                     }
 
                     client
-                        .sendFileFromUrl(
-                            from,
-                            `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${text}`,
-                            "voice",
-                            "voice chat",
-                            id
-                        )
-                        .then((res) =>
-                            console.log(`[INFO] ${from} Send Voice From google`)
-                        )
+                        .sendFileFromUrl(from, `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${text}`, "voice", "voice chat", id)
+                        .then((res) => console.log(`[INFO] ${from} Send Voice From google`))
                         .catch((err) => {
-                            console.log(
-                                `[ERR] ${from} Failed sending voice note `
-                            );
-                            client.reply(
-                                from,
-                                "Pengambilan Voice Gagal. Coba lagi! 🤖",
-                                id
-                            );
+                            console.log(`[ERR] ${from} Failed sending voice note `);
+                            client.reply(from, "Pengambilan Voice Gagal. Coba lagi! 🤖", id);
                         });
                 } else {
                     // when there is no country language code
-                    console.log(
-                        `[FAIL] ${from} Should input Language country code`
-                    );
-                    client.reply(
-                        from,
-                        `*Pastikan anda memasukan kode Bahasa dan Pesan yang ingin di konversi ke voice!* 🤖`,
-                        id
-                    );
+                    console.log(`[FAIL] ${from} Should input Language country code`);
+                    client.reply(from, `*Pastikan anda memasukan kode Bahasa dan Pesan yang ingin di konversi ke voice!* 🤖`, id);
                 }
                 break;
 
@@ -364,15 +249,12 @@ function FnBot(client) {
                             recovered: res.recovered.value,
                             deaths: res.deaths.value,
                         };
-                        if (countryCode !== "")
-                            covidDataResult.name = countryCode;
+                        if (countryCode !== "") covidDataResult.name = countryCode;
                         console.log(`[OK] ${from} request Covid Info`);
                         client.reply(from, showCovidInfo(covidDataResult), id);
                     })
                     .catch((err) => {
-                        console.log(
-                            `[ERR] ${from} Error when Request Covid Info`
-                        );
+                        console.log(`[ERR] ${from} Error when Request Covid Info`);
                     });
                 break;
 
@@ -401,10 +283,7 @@ function FnBot(client) {
                         console.log(`[OK] ${from} Recieved Quran Data!`);
                     })
                     .catch((err) => {
-                        console.log(
-                            `[ERR] ${from} Input Wrong Surat/Ayah`,
-                            err
-                        );
+                        console.log(`[ERR] ${from} Input Wrong Surat/Ayah`, err);
                     });
                 break;
 
@@ -414,15 +293,11 @@ function FnBot(client) {
                 const { mimetype } = message;
                 if (mimetype) {
                     const mediaData = await decryptMedia(message);
-                    const b64 = `data:${mimetype};base64,${mediaData.toString(
-                        "base64"
-                    )}`;
+                    const b64 = `data:${mimetype};base64,${mediaData.toString("base64")}`;
                     await client
                         .sendImageAsSticker(from, b64)
                         .then((res) => console.log("Sticker Send"))
-                        .catch((err) =>
-                            console.log("Failed send sticker, Error: ", err)
-                        );
+                        .catch((err) => console.log("Failed send sticker, Error: ", err));
                 }
                 break;
 
@@ -434,71 +309,34 @@ function FnBot(client) {
                     const songData = await getLyrics(query);
 
                     if (songData.lyrics !== undefined) {
-                        client.reply(
-                            from,
-                            `*@${senderId}* lirik yang kamu request\n${songData.show}`,
-                            id
-                        );
+                        client.reply(from, `*@${senderId}* lirik yang kamu request\n${songData.show}`, id);
                         console.log(`[INFO] ${from} Recieved the lyrics`);
                     } else {
-                        client.reply(
-                            from,
-                            `*@${senderId}* Pastikan kamu memasukkan Judul yang benar! 🤖`,
-                            id
-                        );
+                        client.reply(from, `*@${senderId}* Pastikan kamu memasukkan Judul yang benar! 🤖`, id);
                         console.log(`[FAIL] ${from} Failed recieve the lyrics`);
                     }
                 } else {
-                    client.reply(
-                        from,
-                        `Pastikan kamu memasukkan Judul lagu! 🤖`,
-                        id
-                    );
+                    client.reply(from, `Pastikan kamu memasukkan Judul lagu! 🤖`, id);
                     console.log(`[FAIL] ${from} Need Song Title`);
                 }
                 break;
 
             case "mirip":
-                name =
-                    "*" +
-                    body
-                        .trim()
-                        .split(" ")
-                        .slice(1)
-                        .toString()
-                        .replace(/,/g, " ") +
-                    "*";
-                let mirip = [
-                    "Mang Oleh",
-                    "Monyet",
-                    "Biawak",
-                    "Buaya",
-                    "Ngeteh Asw",
-                    "Mang Garox",
-                    "Yang Lek",
-                    "Uzumaki Bayu",
-                ];
+                name = "*" + body.trim().split(" ").slice(1).toString().replace(/,/g, " ") + "*";
+                let mirip = ["Mang Oleh", "Monyet", "Biawak", "Buaya", "Ngeteh Asw", "Mang Garox", "Yang Lek", "Uzumaki Bayu"];
                 random = Math.floor(Math.random() * (mirip.length - 1) + 1);
                 client.reply(from, `${name} mirip dengan ${mirip[random]}`, id);
                 break;
 
             case "gay":
-                name =
-                    "*" +
-                    body
-                        .trim()
-                        .split(" ")
-                        .slice(1)
-                        .toString()
-                        .replace(/,/g, " ") +
-                    "*";
-                random = Math.floor(Math.random() * (100 - 1) + 1);
-                client.reply(from, `Tingkat Gay ${name} ${random}%`);
+                name = "*" + body.trim().split(" ").slice(1).toString().replace(/,/g, " ") + "*";
+                const { percentage, desc } = getGay();
+                client.reply(from, `Tingkat Gay ${name} ${percentage}% ${desc}`);
                 break;
 
             case "bucin":
             case "gombal":
-                client.reply(from, getGombal(), id);
+                client.reply(from, await getGombal(), id);
                 break;
         }
     });
@@ -517,20 +355,10 @@ function FnBot(client) {
 
         if (action === "add") {
             console.log(`[INFO] Added ${who} to ${chat}`);
-            client.sendTextWithMentions(
-                chat,
-                `Selamat datang *@${
-                    who.split("@")[0]
-                }* Di Grup! Selalu patuhi rules agar selamat dunia akhirat 🐼\n*!menu* untuk membuka perintah bot`
-            );
+            client.sendTextWithMentions(chat, `Selamat datang *@${who.split("@")[0]}* Di Grup! Selalu patuhi rules agar selamat dunia akhirat 🐼\n*!menu* untuk membuka perintah bot`);
         } else {
             console.log(`[INFO] Kicked ${who} from ${chat}`);
-            client.sendTextWithMentions(
-                chat,
-                `*@${
-                    who.split("@")[0]
-                }* Telah Meninggalkan Grup! Selalu patuhi rules agar selamat dunia akhirat 🐧`
-            );
+            client.sendTextWithMentions(chat, `*@${who.split("@")[0]}* Telah Meninggalkan Grup! Selalu patuhi rules agar selamat dunia akhirat 🐧`);
         }
     });
 }
