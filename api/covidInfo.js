@@ -5,9 +5,7 @@ const axios = require("axios");
 async function getCovidInfo(countryCode = "") {
     let data;
 
-    const APIUrl = `https://covid19.mathdro.id/api/${
-        countryCode !== "" ? "countries/" + countryCode : ""
-    }`;
+    const APIUrl = `https://covid19.mathdro.id/api/${countryCode !== "" ? "countries/" + countryCode : ""}`;
 
     try {
         let result = await axios.get(APIUrl);
@@ -21,9 +19,7 @@ async function getCovidInfo(countryCode = "") {
 
 function showCovidInfo(data) {
     return `
-📣 Data Kasus Terbaru Covid-19 di *${
-        data.name ? data.name.toUpperCase() : "Dunia"
-    }*
+📣 Data Kasus Terbaru Covid-19 di *${data.name ? data.name.toUpperCase() : "Dunia"}*
 
 Terkonfirmasi : *${data.confirmed}* Jiwa
 Sembuh         : *${data.recovered}* Jiwa

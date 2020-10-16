@@ -11,4 +11,4 @@ exports.getGay = async () => {
     const getPercentage = await axios.get("https://api-neraka.vercel.app/api/gay");
     const result = getPercentage.data.result;
     return result;
-}
+};
