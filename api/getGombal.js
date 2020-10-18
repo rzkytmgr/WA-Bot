@@ -12,3 +12,9 @@ exports.getGay = async () => {
     const result = getPercentage.data.result;
     return result;
 };
+
+exports.getJodoh = async () => {
+    const getPercentage = await axios.get("https://api-neraka.vercel.app/api/jodoh");
+    const result = getPercentage.data.result;
+    return result;
+};
