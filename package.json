@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@open-wa/wa-automate": "^2.0.25",
+    "@open-wa/wa-automate": "^2.1.6",
     "axios": "^0.20.0",
     "solenolyrics": "^5.0.0",
     "video-url-link": "^0.1.4"
