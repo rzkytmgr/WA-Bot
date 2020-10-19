@@ -14,12 +14,22 @@ const { getGombal, getGay } = require("./api/getGombal");
 const { langCheck } = require("./helpers/helperFunction");
 const { decryptMedia } = require("@open-wa/wa-automate");
 
+const configObject = {
+    chromiumArgs: ["--no-sandbox"],
+    disableSpins: true,
+    authTimeout: 0,
+    headless: true,
+    // useChrome: true,
+    // executablePath: "/usr/bin/google-chrome-stable",
+};
+
+const ops = process.platform;
+if (ops === "win32" || ops === "win64") configObject["executeablePath"] = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+else if (ops === "linux") configObject["executeablePath"] = "/usr/bin/google-chrome-stable";
+else if (ops === "darwin") configObject["executeablePath"] = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+
 // create whatsapp client
-wa.create({
-    headless: false,
-    useChrome: true,
-    executablePath: "/usr/bin/google-chrome-stable",
-}).then((client) => FnBot(client));
+wa.create(configObject).then((client) => FnBot(client));
 
 function FnBot(client) {
     client.onAnyMessage(async (message) => {
