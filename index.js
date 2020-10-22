@@ -50,8 +50,9 @@ function FnBot(client) {
 
             allAdmins = await client.getGroupAdmins(from);
             checkAdmin(author, allAdmins) !== "" ? (isAdmin = true) : (isAdmin = false);
+            const finalCommand = command.trim().split(" ")[0].slice(1);
 
-            switch (command.trim().split(" ")[0].slice(1)) {
+            switch (finalCommand) {
                 case "grevoke":
                     if (isAdmin) {
                         client
