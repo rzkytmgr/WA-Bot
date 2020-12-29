@@ -1,5 +1,3 @@
 # WhatsApp Bot
 
-Wait for the new code 👋!
-
-For Purpose Only.
+[NEW CODE HERE!](https://github.com/rzkytmgr/WhatsApp-Bot)
